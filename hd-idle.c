@@ -434,8 +434,8 @@ static void daemonize(void)
 
   /* use /dev/null for stdin, stdout and stderr */
   open("/dev/null", O_RDONLY);
-  open("/dev/null", O_WRONLY);
-  open("/dev/null", O_WRONLY);
+  open("/dev/kmsg", O_WRONLY);
+  open("/dev/kmsg", O_WRONLY);
 }
 
 /* get DISKSTATS entry by name of disk */
