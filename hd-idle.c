@@ -458,7 +458,7 @@ static void spindown_disk(const char *name)
   char dev_name[100];
   int fd;
 
-  dprintf(TAG "spindown: %s\n", name);
+  printf(TAG "spindown: %s\n", name);
 
   /* fabricate SCSI IO request */
   memset(&io_hdr, 0x00, sizeof(io_hdr));
@@ -582,7 +582,7 @@ static char *disk_name(char *path)
     exit(2);
   }
 
-  dprintf(TAG "using %s for %s\n", s, path);
+  printf(TAG "using %s for %s\n", s, path);
   return(s);
 }
 
