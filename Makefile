@@ -17,7 +17,7 @@ INC_DIRS   =
 
 CC        ?= gcc
 CFLAGS    += $(INC_DIRS) -D_DEFAULT_SOURCE -D_POSIX_SOURCE -Wall -Wextra -Wshadow \
-			 -pedantic -std=gnu99 -fPIC -g -O2
+			 -pedantic -std=gnu99 -fPIC -O3
 
 LD         = $(CC)
 LDFLAGS   += $(LIB_DIRS)
