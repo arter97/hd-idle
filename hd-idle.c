@@ -125,6 +125,8 @@
 #include <scsi/sg.h>
 #include <scsi/scsi.h>
 
+#define TAG "hd-idle: "
+
 #define DEFAULT_IDLE_TIME 600
 static const char STAT_FILE[] = "/proc/diskstats";
 
@@ -193,7 +195,7 @@ int main(int argc, char *argv[])
 
   /* create default idle-time parameter entry */
   if ((it = malloc(sizeof(*it))) == NULL) {
-    fprintf(stderr, "out of memory\n");
+    fprintf(stderr, TAG "out of memory\n");
     exit(1);
   }
   it->next = NULL;
@@ -215,7 +217,7 @@ int main(int argc, char *argv[])
     case 'a':
       /* add a new set of idle-time parameters for this particular disk */
       if ((it = malloc(sizeof(*it))) == NULL) {
-        fprintf(stderr, "out of memory\n");
+        fprintf(stderr, TAG "out of memory\n");
         _return(2);
       }
       it->name = disk_name(optarg);
@@ -249,12 +251,12 @@ int main(int argc, char *argv[])
       break;
 
     case ':':
-      fprintf(stderr, "error: option -%c requires an argument\n", optopt);
+      fprintf(stderr, TAG "error: option -%c requires an argument\n", optopt);
       _return(1);
       break;
 
     case '?':
-      fprintf(stderr, "error: unknown option -%c\n", optopt);
+      fprintf(stderr, TAG "error: unknown option -%c\n", optopt);
       _return(1);
       break;
     }
@@ -314,7 +316,7 @@ int main(int argc, char *argv[])
         if (!is_scsi_disk(tmp.name))
           continue;
 
-        dprintf("probing %s: reads: %u, writes: %u\n", tmp.name, tmp.reads, tmp.writes);
+        dprintf(TAG "probing %s: reads: %u, writes: %u\n", tmp.name, tmp.reads, tmp.writes);
 
         /* get previous statistics for this disk */
         ds = get_diskstats(ds_root, tmp.name);
@@ -322,7 +324,7 @@ int main(int argc, char *argv[])
         if (ds == NULL) {
           /* new disk; just add it to the linked list */
           if ((ds = malloc(sizeof(*ds))) == NULL) {
-            fprintf(stderr, "out of memory\n");
+            fprintf(stderr, TAG "out of memory\n");
             _return(2);
           }
           memcpy(ds, &tmp, sizeof(*ds));
@@ -456,7 +458,7 @@ static void spindown_disk(const char *name)
   char dev_name[100];
   int fd;
 
-  dprintf("spindown: %s\n", name);
+  dprintf(TAG "spindown: %s\n", name);
 
   /* fabricate SCSI IO request */
   memset(&io_hdr, 0x00, sizeof(io_hdr));
@@ -484,7 +486,7 @@ static void spindown_disk(const char *name)
     perror(buf);
 
   } else if (io_hdr.masked_status != 0) {
-    fprintf(stderr, "error: SCSI command failed with status 0x%02x\n",
+    fprintf(stderr, TAG "error: SCSI command failed with status 0x%02x\n",
             io_hdr.masked_status);
     if (io_hdr.masked_status == CHECK_CONDITION) {
       phex(stderr, sense_buf, io_hdr.sb_len_wr, "sense buffer:\n");
@@ -576,11 +578,11 @@ static char *disk_name(char *path)
   }
 
   if ((s = strdup(s)) == NULL) {
-    fprintf(stderr, "out of memory");
+    fprintf(stderr, TAG "out of memory");
     exit(2);
   }
 
-  dprintf("using %s for %s\n", s, path);
+  dprintf(TAG "using %s for %s\n", s, path);
   return(s);
 }
 
